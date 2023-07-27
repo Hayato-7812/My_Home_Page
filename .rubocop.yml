@@ -1,0 +1,23 @@
+inherit_from: .rubocop_todo.yml
+
+AllCops:
+  DisabledByDefault: true
+  NewCops: enable
+
+Layout:
+  Enabled: true
+
+Lint:
+  Enabled: true
+
+Security:
+  Enabled: true
+
+Style:
+  Enabled: false
+
+#Custom
+
+# 1行あたりの文字数制限を無効にする
+Layout/LineLength:
+  Enabled: false
