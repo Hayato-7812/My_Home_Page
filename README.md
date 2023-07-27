@@ -1,27 +1,8 @@
-# README
-
 # My_Home_Page
 これまで/これからの自分の発信するためのWebページ
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+## ER図
+※(↓暫定 -> [編集ページ](https://app.diagrams.net/#G1vytQdIHPhCZ8T-QeH-cBOXPmpc4Rw4-D))
 
-Things you may want to cover:
+![image](https://github.com/Hayato-7812/My_Home_Page/assets/63275973/45667c19-c88b-4eff-88f6-37e6ebd5820c)
 
-* Ruby version
-
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
