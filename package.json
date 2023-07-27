@@ -36,7 +36,8 @@
   },
   "lint-staged": {
     "*.{rb,rake}": [
-      "rubocop -a"
+      "rubocop -a",
+      "rubocop"
     ]
   }
 }
