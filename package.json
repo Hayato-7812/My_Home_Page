@@ -1,0 +1,43 @@
+{
+  "name": "test_app",
+  "private": true,
+  "scripts": {
+    "build": "esbuild app/javascript/*.* --bundle --sourcemap --outdir=app/assets/builds --public-path=assets --target=esnext --loader:.png=file --loader:.js=jsx --loader:.ts=tsx",
+    "build:css": "sass ./app/assets/stylesheets/application.sass.scss:./app/assets/builds/application.css --no-source-map --load-path=node_modules",
+    "prepare": "husky install"
+  },
+  "dependencies": {
+    "@fortawesome/fontawesome-free": "^5.15.1",
+    "@hotwired/stimulus": "^3.2.1",
+    "@rails/actioncable": "^6.1.5",
+    "@rails/activestorage": "^6.1.5",
+    "@rails/ujs": "^6.1.5",
+    "apexcharts": "^3.22.2",
+    "bootstrap": "^4.6.0",
+    "check": "^1.0.0",
+    "esbuild": "^0.16.2",
+    "files": "^2.1.1",
+    "jquery": "^3.5.1",
+    "leaflet": "^1.7.1",
+    "leaflet-contextmenu": "^1.4.0",
+    "leaflet-easybutton": "^2.4.0",
+    "lint-staged": "^13.2.3",
+    "moment": "^2.29.1",
+    "plotly.js-basic-dist": "^1.58.4",
+    "popper.js": "^1.16.1",
+    "sass": "^1.56.2",
+    "tempusdominus-bootstrap-4": "^5.39.0",
+    "turbolinks": "^5.2.0",
+    "yarn": "^1.22.18"
+  },
+  "version": "0.1.0",
+  "devDependencies": {
+    "husky": "^8.0.0"
+  },
+  "lint-staged": {
+    "*.{rb,rake}": [
+      "rubocop -a",
+      "rubocop"
+    ]
+  }
+}
