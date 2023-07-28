@@ -1,10 +1,13 @@
-require 'rails_helper'
-
 RSpec.describe "Sessions", type: :request do
-  describe "GET /new" do
-    it "returns http success" do
-      get "/sessions/new"
-      expect(response).to have_http_status(:success)
+  describe "DELETE /logout" do
+    before(:each) do
+      admin = Admin.create(name: "test_admin", password: "password")
+      admin_sign_in_as(admin)
+    end
+
+    example "ログアウトできる" do
+      delete logout_path
+      expect(get(root_path)).to redirect_to(login_path)
     end
   end
 end
