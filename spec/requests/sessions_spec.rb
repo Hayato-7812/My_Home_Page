@@ -7,7 +7,7 @@ RSpec.describe "Sessions", type: :request do
 
     example "ログアウトできる" do
       delete logout_path
-      expect(get(root_path)).to redirect_to(login_path)
+      expect(response).to redirect_to(login_path)
     end
   end
 end
