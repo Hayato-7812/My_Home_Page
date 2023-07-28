@@ -75,4 +75,9 @@ group :test do
   gem "capybara"
   gem "selenium-webdriver"
   gem "webdrivers"
+  ## github actions用の記載
+  # bundler-audit gemを追加
+  gem 'bundler-audit', require: false
+  # PostgreSQLデータベースアダプターを追加
+  gem 'pg'
 end
