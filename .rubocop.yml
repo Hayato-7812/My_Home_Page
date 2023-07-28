@@ -21,3 +21,7 @@ Style:
 # 1行あたりの文字数制限を無効にする
 Layout/LineLength:
   Enabled: false
+
+# 日本語のコメントを OK とする
+Style/AsciiComments:
+  Enabled: false
