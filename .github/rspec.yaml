@@ -1,50 +1,52 @@
-name: Rspec CI
+name: Run rspec
 
 on:
   push:
-    branches:
-      - master
+  pull_request:
 
 jobs:
-  setup_database:
-    runs-on: ubuntu-latest
-
-    steps:
-    - name: Set up Ruby
-      uses: actions/setup-ruby@v1
-      with:
-        ruby-version: 3.x
-
-    - name: Install dependencies
-      run: |
-        gem install bundler
-        bundle install
-
-    - name: Set up MySQL
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y mysql-server
-
-    - name: Create MySQL Database
-      run: |
-        mysql -u root -e "CREATE DATABASE your_database_name;"
-
   rspec:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
+    services:
+      mysql:
+        image: mysql:8.0
+        ports:
+          - 3306:3306
+        env:
+          MYSQL_ALLOW_EMPTY_PASSWORD: yes
+        options: --health-cmd "mysqladmin ping" --health-interval 10s --health-timeout 5s --health-retries 10
 
     steps:
-    - name: Set up Ruby
-      uses: actions/setup-ruby@v1
-      with:
-        ruby-version: 3.x
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-    - name: Install dependencies
-      run: |
-        gem install bundler
-        bundle install
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
 
-    - name: Rspec
-      run: |
-        # テストを実行するコマンド（例: RSpecを実行する場合）
-        bundle exec rspec
-  
+      - name: Cache node modules
+        uses: actions/cache@v2
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: Bundler and gem install
+        run: |
+          gem install bundler
+          bundle install --jobs 4 --retry 3 --path vendor/bundle
+
+      - name: Yarn install
+        run: yarn install --check-files
+
+      - name: Database create and migrate
+        run: |
+          cp config/database.yml.ci config/database.yml
+          bundle exec rails db:create RAILS_ENV=test
+          bundle exec rails db:migrate RAILS_ENV=test
+
+      - name: Run rspec
+        run: bundle exec rspec
