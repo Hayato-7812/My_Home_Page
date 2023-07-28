@@ -1,0 +1,41 @@
+jobs:
+  setup_database:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Set up Ruby
+      uses: actions/setup-ruby@v1
+      with:
+        ruby-version: 3.x
+
+    - name: Install dependencies
+      run: |
+        gem install bundler
+        bundle install
+
+    - name: Set up MySQL
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y mysql-server
+
+    - name: Create MySQL Database
+      run: |
+        mysql -u root -e "CREATE DATABASE your_database_name;"
+
+  rubocop:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Set up Ruby
+      uses: actions/setup-ruby@v1
+      with:
+        ruby-version: 3.x
+
+    - name: Install dependencies
+      run: |
+        gem install bundler
+        bundle install
+
+    - name: RuboCop
+      run: |
+        bundle exec rubocop
