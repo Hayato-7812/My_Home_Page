@@ -53,8 +53,9 @@ jobs:
       run: bundle install
 
     - name: Set up Database
-      run: bundle exec rails db:setup
-
+      run: sudo /etc/init.d/mysql start |
+        bundle exec rails db:setup 
+        
     - name: Assets Precompile
       run: bin/rails assets:precompile
 
