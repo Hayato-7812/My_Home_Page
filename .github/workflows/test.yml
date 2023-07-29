@@ -7,16 +7,26 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    env:
+      RAILS_ENV: test
+      BUNDLE_GITHUB__COM: ${{ secrets.BUNDLE_GITHUB__COM }}
+      MYSQL_HOST: localhost
+      MYSQL_USER: root
+      MYSQL_ROOT_PASSWORD: password
 
     services:
-      mysql:
+      db:
         image: mysql:5.7
         env:
-          MYSQL_ROOT_PASSWORD: root_password
+          MYSQL_USER: root
+          MYSQL_ROOT_PASSWORD: password
           MYSQL_DATABASE: test_database
         ports:
-          - 3306:3306
-        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+          - 5432:5432
+      chrome:
+        image: selenium/standalone-chrome
+        ports:
+          - 4444:4444
 
     steps:
     - name: Checkout code
@@ -26,23 +36,7 @@ jobs:
       uses: actions/setup-ruby@v1
       with:
         ruby-version: 3.1.4
-
-    - name: Install dependencies
-      run: |
-        gem install bundler
-        bundle config set --local without production
-        bundle install
-
-    - name: Wait for MySQL service
-      run: |
-        until mysqladmin ping -h localhost --silent; do sleep 1; done
-
-    - name: Set up database
-      env:
-        RAILS_ENV: test
-        DATABASE_URL: mysql2://root:root_password@localhost:3306/test_database
-      run: |
-        bundle exec rails db:setup
+        bundler-cache: true # runs 'bundle install' and caches installed gems automatically
 
     - name: Set Node.js version
       uses: actions/setup-node@v2
@@ -58,6 +52,9 @@ jobs:
     - name: Bundle install
       run: bundle install
 
+    - name: Set up Database
+      run: bundle exec rails db:setup
+
     - name: Assets Precompile
       run: bin/rails assets:precompile
 
@@ -65,10 +62,3 @@ jobs:
       env:
         SELENIUM_WEBDRIVER_URL: http://localhost:4444/wd/hub
       run: bundle exec rspec
-
-    - name: Rspec
-      env:
-        RAILS_ENV: test
-        DATABASE_URL: mysql2://root:root_password@localhost:3306/test_database
-      run: |
-        bundle exec rspec
