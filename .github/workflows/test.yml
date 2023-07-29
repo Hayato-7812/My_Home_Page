@@ -33,10 +33,6 @@ jobs:
         bundle config set --local without production
         bundle install
 
-    - name: Wait for MySQL service
-      run: |
-        until mysqladmin ping -h localhost --silent; do sleep 1; done
-
     - name: Set Node.js version
       uses: actions/setup-node@v2
       with:
