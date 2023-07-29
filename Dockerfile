@@ -1,4 +1,4 @@
-FROM ruby:3.1.0
+FROM ruby:3.1.4
 # This is the command to run in the container. build-essential and Node.js are installed. (Required for Rails to work)
 RUN apt-get update -qq && apt-get install -y build-essential nodejs
 # Create a directory named "/app" (the directory where Rails is built) in the container as a working directory.

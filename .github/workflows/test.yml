@@ -1,0 +1,77 @@
+name: Rspec CI
+
+on:
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql:5.7
+        env:
+          MYSQL_ROOT_PASSWORD: root_password
+          MYSQL_DATABASE: test_database
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Ruby
+      uses: actions/setup-ruby@v1
+      with:
+        ruby-version: 3.1.4
+
+    - name: Install dependencies
+      run: |
+        gem install bundler
+        bundle config set --local without production
+        bundle install
+
+    - name: Wait for MySQL service
+      run: |
+        until mysqladmin ping -h localhost --silent; do sleep 1; done
+
+    - name: Set up database
+      env:
+        RAILS_ENV: test
+        DATABASE_URL: mysql2://root:root_password@localhost:3306/test_database
+      run: |
+        bundle exec rails db:setup
+
+    - name: Set Node.js version
+      uses: actions/setup-node@v2
+      with:
+        node-version: 14
+
+    - name: Install Yarn
+      run: npm install -g yarn
+
+    - name: Yarn install
+      run: yarn install --check-files
+
+    - name: Bundle install
+      run: bundle install
+
+    - name: Set up Database
+      run: bundle exec rails db:setup
+
+    - name: Assets Precompile
+      run: bin/rails assets:precompile
+
+    - name: Run tests
+      env:
+        SELENIUM_WEBDRIVER_URL: http://localhost:4444/wd/hub
+      run: bundle exec rspec
+
+    - name: Rspec
+      env:
+        RAILS_ENV: test
+        DATABASE_URL: mysql2://root:root_password@localhost:3306/test_database
+      run: |
+        bundle exec rspec
