@@ -37,13 +37,6 @@ jobs:
       run: |
         until mysqladmin ping -h localhost --silent; do sleep 1; done
 
-    - name: Set up database
-      env:
-        RAILS_ENV: test
-        DATABASE_URL: mysql2://root:root_password@localhost:3306/test_database
-      run: |
-        bundle exec rails db:setup
-
     - name: Set Node.js version
       uses: actions/setup-node@v2
       with:
